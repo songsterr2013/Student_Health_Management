@@ -22,9 +22,9 @@ class RegisterForm(FlaskForm):
             raise ValidationError('Email address already exists! Please try a different email address')
 
     username = StringField(label='帳號:', validators=[Length(min=2, max=30), DataRequired()])
-    email_address = StringField(label='Email Address:', validators=[Email(), DataRequired()])
-    password1 = PasswordField(label='Password:', validators=[Length(min=6), DataRequired()])
-    password2 = PasswordField(label='Confirm Password:', validators=[EqualTo('password1'), DataRequired()])
+    email_address = StringField(label='Email:', validators=[Email(), DataRequired()])
+    password1 = PasswordField(label='設定密碼:', validators=[Length(min=6), DataRequired()])
+    password2 = PasswordField(label='密碼確認:', validators=[EqualTo('password1'), DataRequired()])
     submit = SubmitField(label='Create Account')
 
 

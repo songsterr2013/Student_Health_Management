@@ -11,7 +11,7 @@
             {{ form.hidden_tag() }}
             <br>
             <h1 class="h3 mb-3 font-weight-normal">
-                Please Create your Account
+                填寫註冊資料
             </h1>
             <br>
             {{ form.username.label() }}
@@ -21,10 +21,10 @@
             {{ form.email_address(class="form-control", placeholder="Email Address") }}
 
             {{ form.password1.label() }}
-            {{ form.password1(class="form-control", placeholder="Password") }}
+            {{ form.password1(class="form-control", placeholder="請設定N-N位的密碼") }}
 
             {{ form.password2.label() }}
-            {{ form.password2(class="form-control", placeholder="Confirm Password") }}
+            {{ form.password2(class="form-control", placeholder="請再輸入一次密碼") }}
 
             <br>
 
