@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title  %}
-    Register Page
+    註冊頁面
 {%  endblock %}
 
 {% block content %}
@@ -13,12 +13,11 @@
             <h1 class="h3 mb-3 font-weight-normal">
                 填寫註冊資料
             </h1>
-            <br>
             {{ form.username.label() }}
-            {{ form.username(class="form-control", placeholder="") }}
+            {{ form.username(class="form-control", placeholder="格式範例: s095502650101") }}
 
-            {{ form.email_address.label() }}
-            {{ form.email_address(class="form-control", placeholder="Email Address") }}
+            {{ form.name.label() }}
+            {{ form.name(class="form-control", placeholder="請輸入你的名字") }}
 
             {{ form.password1.label() }}
             {{ form.password1(class="form-control", placeholder="請設定N-N位的密碼") }}
@@ -29,8 +28,8 @@
             <br>
 
             <div class="checkbox mb-3">
-               <h6>Already have an account?</h6>
-               <a class="btn btn-sm btn-secondary" href="{{ url_for('login_page') }}">Login</a>
+               <h6>已擁有帳號?</h6>
+               <a class="btn btn-sm btn-secondary" href="{{ url_for('login_page') }}">登入</a>
             </div>
 
             {{ form.submit(class="btn btn-lg btn-block btn-primary") }}

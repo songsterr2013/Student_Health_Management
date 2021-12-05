@@ -15,10 +15,10 @@
    </head>
 
    <body>
-      <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
          <a class="navbar-brand" href="#">
-             <img id="logo-header" src="../static/img/logo_white.png"
-                  width="150" height="50" alt="東海大學Logo" title="回首頁"> &nbsp 學生健康管理系統
+             <span style="font-size:small; ">東海大學學生健康管理系統</span>
          </a>
 
 
@@ -33,7 +33,10 @@
                    <a class="nav-link" href="{{ url_for('home_page') }}">首頁 <span class="sr-only">(current)</span></a>
                </li>
                <li class="nav-item">
-                   <a class="nav-link" href="{{ url_for('market_page') }}">記錄</a>
+                   <a class="nav-link" href="{{ url_for('main_page') }}">個人基本資料</a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="{{ url_for('inbody_page') }}">InBody 測量數據</a>
                </li>
            </ul>
 
@@ -41,19 +44,19 @@
              {% if current_user.is_authenticated %}
            <ul class="navbar-nav ">
 
-                <li class="nav-item">
+               <!-- <li class="nav-item">
                     <a class="nav-link" style="color: lawngreen; font-weight: bold">
                         <i class="fas fa-coins"></i>
                         {{ current_user.prettier_budget }}
                     </a>
+                </li>!-->
+
+                <li class="nav-item">
+                    <a class="nav-link">{{ current_user.username }}, 你好!</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link">Welcome, {{ current_user.username }}</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('logout_page') }}">Logout</a>
+                    <a class="nav-link" href="{{ url_for('logout_page') }}">登出</a>
                 </li>
 
            </ul>
@@ -71,6 +74,7 @@
          {% endif %}
          </div>
       </nav>
+
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}

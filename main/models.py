@@ -1,5 +1,5 @@
-from market import db, login_manager
-from market import bcrypt
+from main import db, login_manager
+from main import bcrypt
 from flask_login import UserMixin
 
 
@@ -9,20 +9,23 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+# 學生基本資料
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
     username = db.Column(db.String(length=30), nullable=False, unique=True)
-    email_address = db.Column(db.String(length=50), nullable=False, unique=True)
     password_hash = db.Column(db.String(length=60), nullable=False)
-    budget = db.Column(db.Integer(), nullable=False, default=1000)
-    items = db.relationship('Item', backref='owned_user', lazy=True)
+    name = db.Column(db.String(length=50), nullable=False)
+    student_id = db.Column(db.String(length=30), nullable=True)
+    height = db.Column(db.Integer(), nullable=True)
+    group_num = db.Column(db.Integer(), nullable=True)
+    #items = db.relationship('Item', backref='owned_user', lazy=True)
 
-    @property
+    '''@property
     def prettier_budget(self):
         if len(str(self.budget)) >= 4:
             return f'{str(self.budget)[:-3]},{str(self.budget)[-3:]}$'
         else:
-            return f"{self.budget}$"
+            return f"{self.budget}$"'''
 
     @property
     def password(self):
@@ -36,13 +39,12 @@ class User(db.Model, UserMixin):
         return bcrypt.check_password_hash(self.password_hash, attempted_password)
 
 
-class Item(db.Model):
+# Inbody測量數據
+class Inbody(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(length=30), nullable=False, unique=True)
-    price = db.Column(db.Integer(), nullable=False)
-    barcode = db.Column(db.String(length=12), nullable=False, unique=True)
-    description = db.Column(db.String(length=1024), nullable=False, unique=True)
-    owner = db.Column(db.Integer(), db.ForeignKey('user.id'))
-
-    def __repr__(self):
-        return f'Item {self.name}'
+    weight = db.Column(db.String(length=15), nullable=False)
+    fat = db.Column(db.String(length=15), nullable=False)
+    muscle = db.Column(db.String(length=15), nullable=False)
+    inspection_date = db.Column(db.DateTime(), nullable=False)
+    score = db.Column(db.Integer(), nullable=False)
+    username = db.Column(db.String(length=30), nullable=False)
