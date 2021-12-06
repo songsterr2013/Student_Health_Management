@@ -1,6 +1,6 @@
 from main import app
 from flask import render_template, redirect, url_for, flash
-from main.models import User, Inbody
+from main.models import User, Inbody#, Records
 from main.forms import RegisterForm, LoginForm, EditStudentIdForm, EditHeightForm, EditGroupNumForm, InbodyForm
 from main import db
 from flask_login import login_user, logout_user, login_required, current_user
@@ -137,6 +137,43 @@ def inbody_page():
             flash(f'資料上傳出錯: {err_msg}', category='danger')
 
     return render_template('inbody.html', user=user, form=form)
+
+
+'''@app.route('/records', methods=['GET', 'POST'])
+@login_required
+def records_page():
+    form = RecordsForm()
+
+    if current_user.is_active:
+        cur_user = current_user.username
+    try:
+        user = Records.query.filter(Records.username == cur_user)
+    except NameError:
+        raise
+
+    if form.validate_on_submit():
+        user_to_create = Inbody(inspection_date=form.inspection_date.data,
+                                weight=form.weight.data,
+                                fat=form.fat.data,
+                                muscle=form.muscle.data,
+                                score=form.score.data,
+                                username=cur_user
+                                )
+        db.session.add(user_to_create)
+        db.session.commit()
+
+        flash('資料上傳成功!', category='success')
+
+        return redirect(url_for('inbody_page'))
+
+    if form.errors != {}:  # If there are errors from the validations
+        for err_msg in form.errors.values():
+            flash(f'資料上傳出錯: {err_msg}', category='danger')
+
+    return render_template('inbody.html', user=user, form=form)'''
+
+
+# =======================================註冊、登入、登出=======================================
 
 
 @app.route('/register', methods=['GET', 'POST'])

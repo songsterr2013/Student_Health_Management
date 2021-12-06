@@ -48,3 +48,14 @@ class Inbody(db.Model):
     inspection_date = db.Column(db.DateTime(), nullable=False)
     score = db.Column(db.Integer(), nullable=False)
     username = db.Column(db.String(length=30), nullable=False)
+
+
+'''# 個人記錄測量數據
+class Records(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    weight = db.Column(db.String(length=15), nullable=True)
+    fat = db.Column(db.String(length=15), nullable=True)
+    muscle = db.Column(db.String(length=15), nullable=True)
+    inspection_date = db.Column(db.DateTime(), nullable=True)
+    step_count = db.Column(db.Integer(), nullable=True)
+    username = db.Column(db.String(length=30), nullable=True)'''
