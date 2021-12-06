@@ -1,0 +1,8 @@
+dist/
+.env/
+build/
+.idea/
+__pycache__/
+log/
+config.json
+/學生健康.docx
