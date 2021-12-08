@@ -225,6 +225,7 @@ def login_page():
 
 
 @app.route('/logout')
+@login_required
 def logout_page():
     logout_user()
     flash("你已成功登出", category='info')
