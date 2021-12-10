@@ -47,6 +47,8 @@ def edit_student_id_page():
         db.session.commit()
         flash('成功修改學生編號!', category='success')
         return redirect(url_for('main_page'))
+    else:
+        flash('一旦按下「確認修改」，即不得更改!', category='warning')
 
     if form.errors != {}:  # If there are errors from the validations
         for err_msg in form.errors.values():
@@ -67,11 +69,16 @@ def edit_height_page():
     except NameError:
         raise
 
+    if user[0].height is None:
+        flash('一旦按下「確認修改」，即不得更改!', category='warning')
+
     if form.validate_on_submit():
         User.query.filter_by(username=cur_user).update(dict(height=form.height.data))
         db.session.commit()
         flash('成功修改身高!', category='success')
         return redirect(url_for('main_page'))
+    else:
+        flash('一旦按下「確認修改」，即不得更改!', category='warning')
 
     if form.errors != {}:  # If there are errors from the validations
         for err_msg in form.errors.values():
@@ -97,6 +104,8 @@ def edit_group_num_page():
         db.session.commit()
         flash('成功修改組別!', category='success')
         return redirect(url_for('main_page'))
+    else:
+        flash('一旦按下「確認修改」，即不得更改!', category='warning')
 
     if form.errors != {}:  # If there are errors from the validations
         for err_msg in form.errors.values():
@@ -105,9 +114,9 @@ def edit_group_num_page():
     return render_template('edit_group_num.html', user=user, form=form)
 
 
-@app.route('/inbody', methods=['GET', 'POST'])
+@app.route('/first_inbody', methods=['GET', 'POST'])
 @login_required
-def inbody_page():
+def first_inbody_page():
     form = InbodyForm()
 
     if current_user.is_active:
@@ -118,25 +127,23 @@ def inbody_page():
         raise
 
     if form.validate_on_submit():
-        user_to_create = Inbody(inspection_date=form.inspection_date.data,
-                                weight=form.weight.data,
-                                fat=form.fat.data,
-                                muscle=form.muscle.data,
-                                score=form.score.data,
-                                username=cur_user
-                                )
-        db.session.add(user_to_create)
+        inbody_to_create = Inbody(inspection_date=form.inspection_date.data,
+                                  weight=form.weight.data,
+                                  fat=form.fat.data,
+                                  muscle=form.muscle.data,
+                                  score=form.score.data,
+                                  username=cur_user
+                                  )
+        db.session.add(inbody_to_create)
         db.session.commit()
-
         flash('資料上傳成功!', category='success')
-
         return redirect(url_for('inbody_page'))
 
     if form.errors != {}:  # If there are errors from the validations
         for err_msg in form.errors.values():
             flash(f'資料上傳出錯: {err_msg}', category='danger')
 
-    return render_template('inbody.html', user=user, form=form)
+    return render_template('first_inbody.html', user=user, form=form)
 
 
 '''@app.route('/records', methods=['GET', 'POST'])
@@ -170,7 +177,7 @@ def records_page():
         for err_msg in form.errors.values():
             flash(f'資料上傳出錯: {err_msg}', category='danger')
 
-    return render_template('inbody.html', user=user, form=form)'''
+    return render_template('first_inbody.html', user=user, form=form)'''
 
 
 # =======================================註冊、登入、登出=======================================
@@ -186,10 +193,8 @@ def register_page():
                               password=form.password1.data)
         db.session.add(user_to_create)
         db.session.commit()
-
         login_user(user_to_create)
         flash(f'帳號創建成功! 你正在以 {user_to_create.username} 的身份進行操作。', category='success')
-
         return redirect(url_for('main_page'))
 
     if form.errors != {}:  # If there are errors from the validations
@@ -215,7 +220,6 @@ def login_page():
                 attempted_password=form.password.data):
             login_user(attempted_user)
             flash(f'登入成功! 你正在以 {attempted_user.username} 的身份進行操作。', category='success')
-
             return redirect(url_for('main_page'))
 
         else:

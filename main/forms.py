@@ -50,27 +50,43 @@ class InbodyForm(FlaskForm):
 
     def validate_weight(self, weight_to_check):
         try:
-            int_weight = int(weight_to_check.data)
+            int_weight = float(weight_to_check.data)
         except ValueError:
-            raise ValidationError('體重: 請勿輸入數字以外的字符')
-        if int_weight > 200 or int_weight < 30:
-            raise ValidationError('體重: 請輸入30~200區間的數值')
+            raise ValidationError('體重(Kg): 請勿輸入數字以外的字符')
+        if int_weight > 200 or int_weight < 0:
+            raise ValidationError('體重(Kg): 請輸入0~200區間的數值')
 
-    def validate_fat(self, fat_to_check):
+    def validate_fat_weight(self, fat_weight_to_check):
         try:
-            int_fat = int(fat_to_check.data)
+            int_fat = float(fat_weight_to_check.data)
         except ValueError:
-            raise ValidationError('體脂: 請勿輸入數字以外的字符')
-        if int_fat > 200 or int_fat < 30:
-            raise ValidationError('體脂: 請輸入0~100區間的數值')
+            raise ValidationError('體脂肪重(Kg): 請勿輸入數字以外的字符')
+        if int_fat > 200 or int_fat < 0:
+            raise ValidationError('體脂肪重(Kg): 請輸入0~200區間的數值')
+
+    def validate_fat_percent(self, fat_percent_to_check):
+        try:
+            int_fat = float(fat_percent_to_check.data)
+        except ValueError:
+            raise ValidationError('體脂肪率(%): 請勿輸入數字以外的字符')
+        if int_fat > 100 or int_fat < 0:
+            raise ValidationError('體脂肪率(%): 請輸入0~100區間的數值')
 
     def validate_muscle(self, muscle_to_check):
         try:
-            int_muscle = int(muscle_to_check.data)
+            int_muscle = float(muscle_to_check.data)
         except ValueError:
-            raise ValidationError('肌肉量: 請勿輸入數字以外的字符')
-        if int_muscle > 200 or int_muscle < 30:
-            raise ValidationError('肌肉量: 請輸入0~100區間的數值')
+            raise ValidationError('骨骼肌重(Kg): 請勿輸入數字以外的字符')
+        if int_muscle > 200 or int_muscle < 0:
+            raise ValidationError('骨骼肌重(Kg): 請輸入0~200區間的數值')
+
+    def validate_body_water_weight(self, body_water_weight_to_check):
+        try:
+            int_score = float(body_water_weight_to_check.data)
+        except ValueError:
+            raise ValidationError('身體總水重(L): 請勿輸入數字以外的字符')
+        if int_score > 200 or int_score < 0:
+            raise ValidationError('身體總水重(L): 請輸入0~200區間的數值')
 
     def validate_score(self, score_to_check):
         try:
@@ -81,9 +97,11 @@ class InbodyForm(FlaskForm):
             raise ValidationError('Inbody分數: 請輸入0~100區間的數值')
 
     inspection_date = StringField(label='測量日:', validators=[DataRequired()])
-    weight = StringField(label='體重(kg):', validators=[DataRequired()])
-    fat = StringField(label='體脂(%):', validators=[DataRequired()])
-    muscle = StringField(label='肌肉量(%):', validators=[DataRequired()])
+    weight = StringField(label='體重(Kg):', validators=[DataRequired()])
+    fat_weight = StringField(label='體脂肪重(Kg):', validators=[DataRequired()])
+    fat_percent = StringField(label='體脂肪率(%):', validators=[DataRequired()])
+    muscle_weight = StringField(label='骨骼肌重(Kg):', validators=[DataRequired()])
+    body_water_weight = StringField(label='身體總水重(L):', validators=[DataRequired()])
     score = StringField(label='Inbody分數:', validators=[DataRequired()])
     submit = SubmitField(label='確定上傳')
 

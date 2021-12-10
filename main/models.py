@@ -43,8 +43,10 @@ class User(db.Model, UserMixin):
 class Inbody(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     weight = db.Column(db.String(length=15), nullable=False)
-    fat = db.Column(db.String(length=15), nullable=False)
-    muscle = db.Column(db.String(length=15), nullable=False)
+    fat_weight = db.Column(db.String(length=15), nullable=False)
+    fat_percent = db.Column(db.String(length=15), nullable=False)
+    muscle_weight = db.Column(db.String(length=15), nullable=False)
+    body_water_weight = db.Column(db.String(length=15), nullable=False)
     inspection_date = db.Column(db.DateTime(), nullable=False)
     score = db.Column(db.Integer(), nullable=False)
     username = db.Column(db.String(length=30), nullable=False)

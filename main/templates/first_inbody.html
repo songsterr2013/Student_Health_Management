@@ -15,19 +15,27 @@ Inbody 測量
              <!-- Your rows inside the table HERE: -->
              {% for item in user %}
              <tr>
-                <td>量測日: {{item.inspection_date}}</td>
+                <td>測量日: {{item.inspection_date}}</td>
              </tr>
 
              <tr>
-                <td>體重: {{item.weight}}</td>
+                <td>體重(Kg): {{item.weight}}</td>
              </tr>
 
              <tr>
-                <td>體脂: {{item.fat}}</td>
+                <td>體脂肪重(Kg): {{item.fat_weight}}</td>
              </tr>
 
              <tr>
-                <td>肌肉量: {{item.muscle}}</td>
+                <td>體脂肪率(%): {{item.fat_percent}}</td>
+             </tr>
+
+             <tr>
+                <td>骨骼肌重(Kg): {{item.muscle_weight}}</td>
+             </tr>
+
+             <tr>
+                <td>身體總水重(L): {{item.body_water_weight}}</td>
              </tr>
 
              <tr>
@@ -48,16 +56,22 @@ Inbody 測量
                {{ form.inspection_date(type="Date", class="form-control") }}
                <br>
                {{ form.weight.label() }}
-               {{ form.weight(class="form-control", placeholder="範例: 55") }}
+               {{ form.weight(class="form-control", placeholder="範例: 65.2") }}
                <br>
-               {{ form.fat.label() }}
-               {{ form.fat(class="form-control", placeholder="範例: 15") }}
+               {{ form.fat_weight.label() }}
+               {{ form.fat_weight(class="form-control", placeholder="範例: 17.5") }}
                <br>
-               {{ form.muscle.label() }}
-               {{ form.muscle(class="form-control", placeholder="範例: 20") }}
+               {{ form.fat_percent.label() }}
+               {{ form.fat_percent(class="form-control", placeholder="範例: 25.8") }}
+               <br>
+               {{ form.muscle_weight.label() }}
+               {{ form.muscle_weight(class="form-control", placeholder="範例: 26.4") }}
+               <br>
+               {{ form.body_water_weight.label() }}
+               {{ form.body_water_weight(class="form-control", placeholder="範例: 35.3") }}
                <br>
                {{ form.score.label() }}
-               {{ form.score(class="form-control", placeholder="範例: 79") }}
+               {{ form.score(class="form-control", placeholder="範例: 73") }}
                <br>
                {{ form.submit(class="btn btn-lg btn-block btn-success") }}
                <br>
