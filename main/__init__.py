@@ -5,7 +5,7 @@ from flask_login import LoginManager
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://Admin_SAU:MyRootSQL2021@localhost/student_health_system?charset=utf8'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://others:ThisIsFor2021OtherUser@localhost/student_health_system?charset=utf8'
 app.config['SECRET_KEY'] = 'f67789555f8dcd52a21eab1f'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 

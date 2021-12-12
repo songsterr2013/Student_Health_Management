@@ -49,6 +49,15 @@ class EditGroupNumForm(FlaskForm):
 
 class InbodyForm(FlaskForm):
 
+    def validate_inspection_date(self, date_to_check):
+        now = datetime.datetime.now()
+        # constraint = now - datetime.timedelta(days=8)
+        input_time = datetime.datetime.strptime(date_to_check.data, "%Y-%m-%d")
+        if input_time > now:
+            raise ValidationError('請勿輸入未來的日期')
+        # if input_time < constraint:
+        #    raise ValidationError('只可選擇最近7天的日期')
+
     def validate_weight(self, weight_to_check):
         try:
             int_weight = round(float(weight_to_check.data), 4)
