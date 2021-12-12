@@ -1,9 +1,10 @@
 from main import app
 from flask import render_template, redirect, url_for, flash
-from main.models import User, Inbody#, Records
-from main.forms import RegisterForm, LoginForm, EditStudentIdForm, EditHeightForm, EditGroupNumForm, InbodyForm
+from main.models import User, Inbody, BodyFatMachine, StepCount, SportAndOthers, SportType
+from main.forms import RegisterForm, LoginForm, EditStudentIdForm, EditHeightForm, EditGroupNumForm, InbodyForm, StepForm, PersonalizationForm
 from main import db
 from flask_login import login_user, logout_user, login_required, current_user
+from datetime import datetime
 
 
 @app.route('/')
@@ -114,23 +115,26 @@ def edit_group_num_page():
     return render_template('edit_group_num.html', user=user, form=form)
 
 
-@app.route('/first_inbody', methods=['GET', 'POST'])
+@app.route('/inbody', methods=['GET', 'POST'])
 @login_required
-def first_inbody_page():
+def inbody_page():
     form = InbodyForm()
 
     if current_user.is_active:
         cur_user = current_user.username
     try:
         user = Inbody.query.filter(Inbody.username == cur_user)
+        user_count = Inbody.query.filter(Inbody.username == cur_user).count()
     except NameError:
         raise
 
     if form.validate_on_submit():
         inbody_to_create = Inbody(inspection_date=form.inspection_date.data,
                                   weight=form.weight.data,
-                                  fat=form.fat.data,
-                                  muscle=form.muscle.data,
+                                  fat_weight=form.fat_weight.data,
+                                  fat_percent=form.fat_percent.data,
+                                  muscle_weight=form.muscle_weight.data,
+                                  body_water_weight=form.body_water_weight.data,
                                   score=form.score.data,
                                   username=cur_user
                                   )
@@ -143,41 +147,113 @@ def first_inbody_page():
         for err_msg in form.errors.values():
             flash(f'資料上傳出錯: {err_msg}', category='danger')
 
-    return render_template('first_inbody.html', user=user, form=form)
+    return render_template('inbody.html', user=user, user_count=user_count, form=form)
 
 
-'''@app.route('/records', methods=['GET', 'POST'])
+@app.route('/fat_machine', methods=['GET', 'POST'])
 @login_required
-def records_page():
-    form = RecordsForm()
+def fat_machine_page():
+    form = InbodyForm()  # 表單上傳一模一樣所以直接套來用
 
     if current_user.is_active:
         cur_user = current_user.username
     try:
-        user = Records.query.filter(Records.username == cur_user)
+        user = BodyFatMachine.query.filter(BodyFatMachine.username == cur_user)
+        user_count = BodyFatMachine.query.filter(BodyFatMachine.username == cur_user).count()
     except NameError:
         raise
 
     if form.validate_on_submit():
-        user_to_create = Inbody(inspection_date=form.inspection_date.data,
-                                weight=form.weight.data,
-                                fat=form.fat.data,
-                                muscle=form.muscle.data,
-                                score=form.score.data,
-                                username=cur_user
-                                )
-        db.session.add(user_to_create)
+        fat_machine_to_create = BodyFatMachine(inspection_date=form.inspection_date.data,
+                                               weight=form.weight.data,
+                                               fat_weight=form.fat_weight.data,
+                                               fat_percent=form.fat_percent.data,
+                                               muscle_weight=form.muscle_weight.data,
+                                               body_water_weight=form.body_water_weight.data,
+                                               score=form.score.data,
+                                               username=cur_user
+                                               )
+        db.session.add(fat_machine_to_create)
         db.session.commit()
-
         flash('資料上傳成功!', category='success')
-
-        return redirect(url_for('inbody_page'))
+        return redirect(url_for('fat_machine_page'))
 
     if form.errors != {}:  # If there are errors from the validations
         for err_msg in form.errors.values():
             flash(f'資料上傳出錯: {err_msg}', category='danger')
 
-    return render_template('first_inbody.html', user=user, form=form)'''
+    return render_template('fat_machine.html', user=user, user_count=user_count, form=form)
+
+
+@app.route('/step', methods=['GET', 'POST'])
+@login_required
+def step_page():
+    form = StepForm()  # 表單上傳一模一樣所以直接套來用
+
+    if current_user.is_active:
+        cur_user = current_user.username
+    try:
+        user = StepCount.query.filter(StepCount.username == cur_user)
+    except NameError:
+        raise
+
+    if form.validate_on_submit():
+        date_to_check = datetime.strptime(form.walking_date.data, "%Y-%m-%d")
+
+        if date_to_check not in [i.walking_date for i in user]:  # 如果那一天沒有資料
+            step_to_create = StepCount(walking_date=date_to_check,
+                                       step=form.step.data,
+                                       username=cur_user
+                                       )
+            db.session.add(step_to_create)
+            db.session.commit()
+            flash('資料上傳成功!', category='success')
+            return redirect(url_for('step_page'))
+
+        else:
+            flash('所選日期已有資料，請勿重覆上傳!', category='danger')
+
+    if form.errors != {}:  # If there are errors from the validations
+        for err_msg in form.errors.values():
+            flash(f'{err_msg}', category='danger')
+
+    return render_template('step.html', user=user, form=form)
+
+
+@app.route('/personalization', methods=['GET', 'POST'])
+@login_required
+def personalization_page():
+    form = PersonalizationForm()
+
+    if current_user.is_active:
+        cur_user = current_user.username
+    try:
+        user = db.session.query(SportAndOthers.sporting_date,
+                                SportAndOthers.description,
+                                SportType.sport_type,
+                                SportAndOthers.sport_duration).\
+                join(SportType, SportAndOthers.sport_code == SportType.id, isouter=True).\
+                filter(SportAndOthers.username == cur_user)
+    except NameError:
+        raise
+
+    if form.validate_on_submit():
+        sport_to_create = SportAndOthers(sporting_date=form.sporting_date.data,
+                                         sport_code=form.sport_code.data,
+                                         sport_duration=form.sport_duration.data,
+                                         username=cur_user,
+                                         description=form.description.data
+                                         )
+        db.session.add(sport_to_create)
+        db.session.commit()
+        flash('資料上傳成功!', category='success')
+        return redirect(url_for('personalization_page'))
+
+    if form.errors != {}:  # If there are errors from the validations
+        for err_msg in form.errors.values():
+            flash(f'資料上傳出錯: {err_msg}', category='danger')
+
+    return render_template('personalization.html', user=user, form=form)
 
 
 # =======================================註冊、登入、登出=======================================
@@ -194,7 +270,7 @@ def register_page():
         db.session.add(user_to_create)
         db.session.commit()
         login_user(user_to_create)
-        flash(f'帳號創建成功! 你正在以 {user_to_create.username} 的身份進行操作。', category='success')
+        flash(f'帳號創建成功! 請先完善個人資料。', category='success')
         return redirect(url_for('main_page'))
 
     if form.errors != {}:  # If there are errors from the validations
@@ -220,7 +296,7 @@ def login_page():
                 attempted_password=form.password.data):
             login_user(attempted_user)
             flash(f'登入成功! 你正在以 {attempted_user.username} 的身份進行操作。', category='success')
-            return redirect(url_for('main_page'))
+            return redirect(url_for('home_page'))
 
         else:
             flash('帳號密碼有誤! 請再嘗試。', category='danger')

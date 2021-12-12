@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.validators import Length, EqualTo, DataRequired, ValidationError
-from main.models import User
+from main.models import User, StepCount
 import string
+import datetime
 
 
 class EditStudentIdForm(FlaskForm):
@@ -50,41 +51,51 @@ class InbodyForm(FlaskForm):
 
     def validate_weight(self, weight_to_check):
         try:
-            int_weight = float(weight_to_check.data)
+            int_weight = round(float(weight_to_check.data), 4)
         except ValueError:
             raise ValidationError('體重(Kg): 請勿輸入數字以外的字符')
+        if len(str(int_weight)) >= 6:
+            raise ValidationError('體重(Kg): 輸入小數點後1位的數值即可')
         if int_weight > 200 or int_weight < 0:
             raise ValidationError('體重(Kg): 請輸入0~200區間的數值')
 
     def validate_fat_weight(self, fat_weight_to_check):
         try:
-            int_fat = float(fat_weight_to_check.data)
+            int_fat = round(float(fat_weight_to_check.data), 4)
         except ValueError:
             raise ValidationError('體脂肪重(Kg): 請勿輸入數字以外的字符')
+        if len(str(int_fat)) >= 6:
+            raise ValidationError('體脂肪重(Kg): 輸入小數點後1位的數值即可')
         if int_fat > 200 or int_fat < 0:
             raise ValidationError('體脂肪重(Kg): 請輸入0~200區間的數值')
 
     def validate_fat_percent(self, fat_percent_to_check):
         try:
-            int_fat = float(fat_percent_to_check.data)
+            int_fat = round(float(fat_percent_to_check.data), 4)
         except ValueError:
             raise ValidationError('體脂肪率(%): 請勿輸入數字以外的字符')
+        if len(str(int_fat)) >= 6:
+            raise ValidationError('體脂肪率(%): 輸入小數點後1位的數值即可')
         if int_fat > 100 or int_fat < 0:
             raise ValidationError('體脂肪率(%): 請輸入0~100區間的數值')
 
     def validate_muscle(self, muscle_to_check):
         try:
-            int_muscle = float(muscle_to_check.data)
+            int_muscle = round(float(muscle_to_check.data), 4)
         except ValueError:
             raise ValidationError('骨骼肌重(Kg): 請勿輸入數字以外的字符')
+        if len(str(int_muscle)) >= 6:
+            raise ValidationError('骨骼肌重(Kg): 輸入小數點後1位的數值即可')
         if int_muscle > 200 or int_muscle < 0:
             raise ValidationError('骨骼肌重(Kg): 請輸入0~200區間的數值')
 
     def validate_body_water_weight(self, body_water_weight_to_check):
         try:
-            int_score = float(body_water_weight_to_check.data)
+            int_score = round(float(body_water_weight_to_check.data), 4)
         except ValueError:
             raise ValidationError('身體總水重(L): 請勿輸入數字以外的字符')
+        if len(str(int_score)) >= 6:
+            raise ValidationError('身體總水重(L): 輸入小數點後1位的數值即可')
         if int_score > 200 or int_score < 0:
             raise ValidationError('身體總水重(L): 請輸入0~200區間的數值')
 
@@ -93,7 +104,7 @@ class InbodyForm(FlaskForm):
             int_score = int(score_to_check.data)
         except ValueError:
             raise ValidationError('Inbody分數: 請勿輸入數字以外的字符')
-        if int_score > 100 or int_score < 0:
+        if int_score > 200 or int_score < 0:
             raise ValidationError('Inbody分數: 請輸入0~100區間的數值')
 
     inspection_date = StringField(label='測量日:', validators=[DataRequired()])
@@ -104,6 +115,60 @@ class InbodyForm(FlaskForm):
     body_water_weight = StringField(label='身體總水重(L):', validators=[DataRequired()])
     score = StringField(label='Inbody分數:', validators=[DataRequired()])
     submit = SubmitField(label='確定上傳')
+    disable_submit = SubmitField(label='暫不開放上傳')
+
+
+class StepForm(FlaskForm):
+
+    def validate_step(self, step_to_check):
+        try:
+            int_step = int(step_to_check.data)
+        except ValueError:
+            raise ValidationError('步數: 請輸入正整數')
+        if int_step > 200000 or int_step < 0:
+            raise ValidationError('請輸入合理區間的數值')
+
+    def validate_walking_date(self, date_to_check):
+        now = datetime.datetime.now()
+        constraint = now - datetime.timedelta(days=8)
+        input_time = datetime.datetime.strptime(date_to_check.data, "%Y-%m-%d")
+        if input_time > now:
+            raise ValidationError('請勿輸入未來的日期')
+        if input_time < constraint:
+            raise ValidationError('只可選擇最近7天的日期')
+
+    walking_date = StringField(label='測量日:', validators=[DataRequired()])
+    step = StringField(label='輸入你的步數:(正整數)', validators=[DataRequired()])
+    submit = SubmitField(label='確定上傳')
+
+
+class PersonalizationForm(FlaskForm):
+
+    def validate_sporting_date(self, date_to_check):
+        now = datetime.datetime.now()
+        constraint = now - datetime.timedelta(days=8)
+        input_time = datetime.datetime.strptime(date_to_check.data, "%Y-%m-%d")
+        if input_time > now:
+            raise ValidationError('請勿輸入未來的日期')
+        if input_time < constraint:
+            raise ValidationError('只可選擇最近7天的日期')
+
+    def validate_sport_duration(self, time_to_check):
+        try:
+            int_time = int(time_to_check.data)
+        except ValueError:
+            raise ValidationError('運動時長: 請輸入正整數')
+        if int_time > 1440 or int_time < 0:
+            raise ValidationError('Inbody分數: 請輸入有效區間的數值')
+
+    type = [('1', '核心運動'), ('2', '彈力帶'), ('3', '重量訓練'), ('4', '瑜伽'),
+            ('5', '球類運動'), ('6', '有氧運動'), ('7', '其它')]
+    sporting_date = StringField(label='運動日:', validators=[DataRequired()])
+    sport_code = SelectField('選擇運動:', choices=type)
+    description = StringField(label='若上方選擇其它，請填寫項目名稱:')
+    sport_duration = StringField(label='運動時長:(分鐘)', validators=[DataRequired()])
+    submit = SubmitField(label='確定上傳')
+
 
 class RegisterForm(FlaskForm):
 

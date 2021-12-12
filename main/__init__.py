@@ -10,11 +10,12 @@ app.config['SECRET_KEY'] = 'f67789555f8dcd52a21eab1f'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
+
 bcrypt = Bcrypt(app)
+
 login_manager = LoginManager(app)
 login_manager.login_view = "login_page"
 login_manager.login_message = "請先登入"
 login_manager.login_message_category = "info"
 
 from main import routes
-

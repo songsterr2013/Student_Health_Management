@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title  %}
+個人運動數據記錄
+{%  endblock %}
+
+{% block content%}
+
+<p></p>
+<h2 style="text-align: center">個人運動數據記錄</h2>
+
+<div class="row" style="margin-top:20px; margin-left:20px; margin-right:20px;">
+       <div class="container">
+           <h5>請輸入...</h5>
+           <p></p>
+
+           <form method="POST" class="form-edit" style="color:white">
+               {{ form.hidden_tag() }}
+
+               {{ form.sporting_date.label() }}
+               {{ form.sporting_date(type="Date", class="form-control") }}
+               <br>
+               {{ form.sport_code.label() }}
+               {{ form.sport_code(class="form-control") }}
+               <br>
+               {{ form.description.label() }}
+               {{ form.description(class="form-control", placeholder="範例: 跆拳道") }}
+               <br>
+               {{ form.sport_duration.label() }}
+               {{ form.sport_duration(class="form-control", placeholder="範例: 30") }}
+               <br>
+               {{ form.submit(class="btn btn-lg btn-block btn-success") }}
+               <p></p>
+           </form>
+       </div>
+</div>
+
+<div class="row" style="margin-top:20px; margin-left:20px; margin-right:20px;">
+
+    <table class="table table-hover table-dark">
+          <thead>
+          </thead>
+          <tbody>
+             <!-- Your rows inside the table HERE: -->
+             {% for item in user %}
+             <tr>
+                <td style="text-align: center">
+                    {{loop.index}}
+                </td>
+             </tr>
+             <tr>
+                <td>運動日: {{item.sporting_date.strftime('%Y-%m-%d')}}</td>
+             </tr>
+             <tr>
+                <td>運動項目: {{item.sport_type}} ({{item.description}})</td>
+             </tr>
+             <tr>
+                <td>運動分鐘: {{item.sport_duration}}</td>
+             </tr>
+             <tr>
+                <td></td>
+             </tr>
+             {% endfor %}
+          </tbody>
+    </table>
+
+</div>
+
+{%  endblock %}

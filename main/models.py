@@ -18,14 +18,7 @@ class User(db.Model, UserMixin):
     student_id = db.Column(db.String(length=30), nullable=True)
     height = db.Column(db.Integer(), nullable=True)
     group_num = db.Column(db.Integer(), nullable=True)
-    #items = db.relationship('Item', backref='owned_user', lazy=True)
-
-    '''@property
-    def prettier_budget(self):
-        if len(str(self.budget)) >= 4:
-            return f'{str(self.budget)[:-3]},{str(self.budget)[-3:]}$'
-        else:
-            return f"{self.budget}$"'''
+    created_date = db.Column(db.DateTime, default=db.func.now())
 
     @property
     def password(self):
@@ -47,17 +40,47 @@ class Inbody(db.Model):
     fat_percent = db.Column(db.String(length=15), nullable=False)
     muscle_weight = db.Column(db.String(length=15), nullable=False)
     body_water_weight = db.Column(db.String(length=15), nullable=False)
-    inspection_date = db.Column(db.DateTime(), nullable=False)
     score = db.Column(db.Integer(), nullable=False)
+    inspection_date = db.Column(db.DateTime(), nullable=False)
     username = db.Column(db.String(length=30), nullable=False)
+    created_date = db.Column(db.DateTime, default=db.func.now())
 
 
-'''# 個人記錄測量數據
-class Records(db.Model):
+# 體脂計測量數據
+class BodyFatMachine(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    weight = db.Column(db.String(length=15), nullable=True)
-    fat = db.Column(db.String(length=15), nullable=True)
-    muscle = db.Column(db.String(length=15), nullable=True)
-    inspection_date = db.Column(db.DateTime(), nullable=True)
-    step_count = db.Column(db.Integer(), nullable=True)
-    username = db.Column(db.String(length=30), nullable=True)'''
+    weight = db.Column(db.String(length=15), nullable=False)
+    fat_weight = db.Column(db.String(length=15), nullable=False)
+    fat_percent = db.Column(db.String(length=15), nullable=False)
+    muscle_weight = db.Column(db.String(length=15), nullable=False)
+    body_water_weight = db.Column(db.String(length=15), nullable=False)
+    score = db.Column(db.Integer(), nullable=False)
+    inspection_date = db.Column(db.DateTime(), nullable=False)
+    username = db.Column(db.String(length=30), nullable=False)
+    created_date = db.Column(db.DateTime, default=db.func.now())
+
+
+# 個人運動數據記錄
+class StepCount(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    step = db.Column(db.String(length=15), nullable=False)
+    walking_date = db.Column(db.DateTime(), nullable=False)
+    username = db.Column(db.String(length=30), nullable=False)
+    created_date = db.Column(db.DateTime, default=db.func.now())
+
+
+# 個人運動數據記錄
+class SportAndOthers(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    sport_code = db.Column(db.Integer(), nullable=False)
+    sport_duration = db.Column(db.String(length=15), nullable=False)
+    sporting_date = db.Column(db.DateTime(), nullable=False)
+    username = db.Column(db.String(length=30), nullable=False)
+    created_date = db.Column(db.DateTime, default=db.func.now())
+    description = db.Column(db.String(length=30), nullable=True)
+
+
+# 運動種類
+class SportType(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    sport_type = db.Column(db.String(length=30), nullable=False)

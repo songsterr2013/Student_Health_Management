@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title  %}
+步數記錄
+{%  endblock %}
+
+{% block content%}
+
+<p></p>
+<h2 style="text-align: center">步數記錄</h2>
+
+<div class="row" style="margin-top:20px; margin-left:20px; margin-right:20px;">
+       <div class="container">
+           <h5>請輸入...</h5>
+           <p></p>
+
+           <form method="POST" class="form-edit" style="color:white">
+               {{ form.hidden_tag() }}
+
+               {{ form.walking_date.label() }}
+               {{ form.walking_date(type="Date", class="form-control") }}
+               <br>
+               {{ form.step.label() }}
+               {{ form.step(class="form-control", placeholder="範例: 10000") }}
+               <br>
+               {{ form.submit(class="btn btn-lg btn-block btn-success") }}
+               <p></p>
+           </form>
+       </div>
+</div>
+
+<div class="row" style="margin-top:20px; margin-left:20px; margin-right:20px;">
+
+    <table class="table table-hover table-dark", style="text-align: center">
+          <thead>
+          </thead>
+          <tbody>
+             <!-- Your rows inside the table HERE: -->
+             <tr>
+                 <th>日期</th>
+                 <th>步數</th>
+             </tr>
+             {% for item in user %}
+             <tr>
+                <td>
+                    {{item.walking_date.strftime('%Y-%m-%d')}}
+                </td>
+                 <td>
+                    {{item.step}}
+                </td>
+             </tr>
+
+             {% endfor %}
+          </tbody>
+    </table>
+
+</div>
+
+{%  endblock %}
