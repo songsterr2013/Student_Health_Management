@@ -161,7 +161,8 @@ def inbody_page():
         for err_msg in form.errors.values():
             flash(f'資料上傳出錯: {err_msg}', category='danger')
 
-    return render_template('inbody.html', user=user, user_count=user_count, form=form)
+    return render_template('inbody.h'
+                           'tml', user=user, user_count=user_count, form=form)
 
 
 @app.route('/fat_machine', methods=['GET', 'POST'])

@@ -137,7 +137,7 @@ class StepForm(FlaskForm):
 
     def validate_walking_date(self, date_to_check):
         now = datetime.datetime.now()
-        constraint = now - datetime.timedelta(days=8)
+        constraint = now - datetime.timedelta(days=31)
         input_time = datetime.datetime.strptime(date_to_check.data, "%Y-%m-%d")
         if input_time > now:
             raise ValidationError('請勿輸入未來的日期')
@@ -158,7 +158,7 @@ class PersonalizationForm(FlaskForm):
         if input_time > now:
             raise ValidationError('請勿輸入未來的日期')
         if input_time < constraint:
-            raise ValidationError('只可選擇最近7天的日期')
+            raise ValidationError('只可選擇最近30天的日期')
 
     def validate_sport_duration(self, time_to_check):
         try:
@@ -172,7 +172,7 @@ class PersonalizationForm(FlaskForm):
             ('5', '球類運動'), ('6', '有氧運動'), ('7', '其它')]
     sporting_date = StringField(label='運動日:', validators=[DataRequired()])
     sport_code = SelectField('選擇運動:', choices=type)
-    description = StringField(label='若上方選擇其它，請填寫項目名稱:')
+    description = StringField(label='請填寫運動項目名稱:')
     sport_duration = StringField(label='運動時長:(分鐘)', validators=[DataRequired()])
     submit = SubmitField(label='確定上傳')
 
