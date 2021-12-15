@@ -129,19 +129,33 @@ def inbody_page():
         raise
 
     if form.validate_on_submit():
-        inbody_to_create = Inbody(inspection_date=form.inspection_date.data,
-                                  weight=form.weight.data,
-                                  fat_weight=form.fat_weight.data,
-                                  fat_percent=form.fat_percent.data,
-                                  muscle_weight=form.muscle_weight.data,
-                                  body_water_weight=form.body_water_weight.data,
-                                  score=form.score.data,
-                                  username=cur_user
-                                  )
-        db.session.add(inbody_to_create)
-        db.session.commit()
-        flash('資料上傳成功!', category='success')
-        return redirect(url_for('inbody_page'))
+        date_to_check = datetime.strptime(form.inspection_date.data, "%Y-%m-%d")
+
+        try:  # 利用這個方法去限制他們輸入的前後測不能比上一次更早
+            max_date = max([i.inspection_date for i in user[0:]])
+        except ValueError:
+            max_date = datetime.min
+
+        if date_to_check >= max_date:
+
+            inbody_to_create = Inbody(inspection_date=form.inspection_date.data,
+                                      weight=form.weight.data,
+                                      fat_weight=form.fat_weight.data,
+                                      fat_percent=form.fat_percent.data,
+                                      muscle_weight=form.muscle_weight.data,
+                                      body_water_weight=form.body_water_weight.data,
+                                      score=form.score.data,
+                                      username=cur_user
+                                      )
+            db.session.add(inbody_to_create)
+            db.session.commit()
+            flash('資料上傳成功!', category='success')
+            return redirect(url_for('inbody_page'))
+
+        else:
+            flash('請勿選擇比先前更早的日期!', category='danger')
+
+
 
     if form.errors != {}:  # If there are errors from the validations
         for err_msg in form.errors.values():
@@ -164,19 +178,30 @@ def fat_machine_page():
         raise
 
     if form.validate_on_submit():
-        fat_machine_to_create = BodyFatMachine(inspection_date=form.inspection_date.data,
-                                               weight=form.weight.data,
-                                               fat_weight=form.fat_weight.data,
-                                               fat_percent=form.fat_percent.data,
-                                               muscle_weight=form.muscle_weight.data,
-                                               body_water_weight=form.body_water_weight.data,
-                                               score=form.score.data,
-                                               username=cur_user
-                                               )
-        db.session.add(fat_machine_to_create)
-        db.session.commit()
-        flash('資料上傳成功!', category='success')
-        return redirect(url_for('fat_machine_page'))
+        date_to_check = datetime.strptime(form.inspection_date.data, "%Y-%m-%d")
+
+        try:  # 利用這個方法去限制他們輸入的不能比上一次更早
+            max_date = max([i.inspection_date for i in user[0:]])
+        except ValueError:
+            max_date = datetime.min
+
+        if date_to_check >= max_date:
+            fat_machine_to_create = BodyFatMachine(inspection_date=form.inspection_date.data,
+                                                   weight=form.weight.data,
+                                                   fat_weight=form.fat_weight.data,
+                                                   fat_percent=form.fat_percent.data,
+                                                   muscle_weight=form.muscle_weight.data,
+                                                   body_water_weight=form.body_water_weight.data,
+                                                   score=form.score.data,
+                                                   username=cur_user
+                                                   )
+            db.session.add(fat_machine_to_create)
+            db.session.commit()
+            flash('資料上傳成功!', category='success')
+            return redirect(url_for('fat_machine_page'))
+
+        else:
+            flash('請勿選擇比先前更早的日期!', category='danger')
 
     if form.errors != {}:  # If there are errors from the validations
         for err_msg in form.errors.values():

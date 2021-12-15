@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.validators import Length, EqualTo, DataRequired, ValidationError
-from main.models import User, StepCount
+from main.models import User
 import string
 import datetime
 
@@ -55,8 +55,6 @@ class InbodyForm(FlaskForm):
         input_time = datetime.datetime.strptime(date_to_check.data, "%Y-%m-%d")
         if input_time > now:
             raise ValidationError('請勿輸入未來的日期')
-        # if input_time < constraint:
-        #    raise ValidationError('只可選擇最近7天的日期')
 
     def validate_weight(self, weight_to_check):
         try:
